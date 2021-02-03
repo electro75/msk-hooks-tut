@@ -1,74 +1,96 @@
 import React, { useState } from 'react';
 
-function MyApp() {
+function FruitBasket() {
 
-    const [applesCount, setApplesCount] = useState(0);
-    const [kiwiCount, setKiwisCount] = useState(0);
-    const [orangeCount, setOrangessCount] = useState(0);
+    const fruits = ["Apple", "Kiwi", "Orange"];
 
-    const totalFcount = applesCount + kiwiCount + orangeCount;
+    const initialState = {};
 
-    function addAppleToBasket() {
-        setApplesCount(applesCount + 1);
+    
+
+    const prices = {
+        Apple: 10,
+        Kiwi: 15,
+        Orange: 12
     }
 
-    function removeAppleFromBasket() {
-        setApplesCount(applesCount - 1);
+    fruits.forEach(fruit => {
+        const price = prices[fruit];
+        initialState[fruit] = {
+            count: 0,
+            price
+        }
+    })    
+
+    const taxPercent = 2;
+    
+    const [basket, setBasket] = useState(initialState);
+
+    let totalFcount = 0;
+    let totalFPrice = 0;
+
+    Object.keys(basket).forEach(fruitKey => {
+        const fruit = basket[fruitKey];
+        totalFcount += fruit.count;
+        totalFPrice += fruit.count * fruit.price;
+    })
+ 
+
+    
+    
+    const taxPrice = totalFPrice * taxPercent /100;
+
+    function addFruitToBasket(key) {
+        setBasket({
+            ...basket,
+            [key]: {
+                ...basket[key],
+                count: basket[key].count + 1
+            }
+        })
     }
 
-    function addKiwiToBasket() {
-        setKiwisCount(kiwiCount + 1);
+    function removeFruitFromBasket(key) {
+        setBasket({
+            ...basket,
+            [key]: {
+                ...basket[key],
+                count: basket[key].count - 1
+            }
+        })
     }
-
-    function removeKiwiFromBasket() {
-        setKiwisCount(kiwiCount -1);
-    }
-
-    function addOrangeToBasket() {
-        setOrangessCount(orangeCount +1);
-    }
-
-    function removeOrangeFromBasket() {
-        setOrangessCount(orangeCount -1);
-    }
+    
 
     return (
     <div>
         <h1>Fruit Shop</h1>
-        <div>
-            Apples
-            <button onClick={addAppleToBasket} >+</button>
-            {applesCount}
-            <button onClick={removeAppleFromBasket} >-</button>
-        </div>
-
-        <div>
-            Kiwi
-            <button onClick={addKiwiToBasket} >+</button>
-            {kiwiCount}
-            <button onClick={removeKiwiFromBasket} >-</button>
-        </div>
-
-        <div>
-            Orange
-            <button onClick={addOrangeToBasket} >+</button>
-            {orangeCount}
-            <button onClick={removeOrangeFromBasket} >-</button>
-        </div>
         
+        {Object.keys(basket).map(fruitKey => {
+            const fruit = basket[fruitKey];
+            return (
+                <div key={fruitKey} >
+                    {fruitKey}
+                    <button onClick={() => addFruitToBasket(fruitKey)} >+</button>
+                    {fruit.count}
+                    <button onClick={() => removeFruitFromBasket(fruitKey)} >-</button>
+                    
+                </div>
+            )
+        })}
+
         <hr/>
         <h1>Invoice</h1>
 
         <div>Total Fruits Added: {totalFcount}</div>
-        <div>Total Price: 100</div>
-        <div>Tax %: 5</div>
-        <div>Tax Price: 5</div>
+        <div>Total Price: {totalFPrice}</div>
+        <div>Tax %: {taxPercent}</div>
+        <div>Tax Price: {taxPrice}</div>
         <br/>
-        <div>Total Price: 105</div>
+        <div>Total Price: {totalFPrice + taxPrice}</div>
     </div>)
 }
 
-export default MyApp;
+export default FruitBasket;
 
 
 // Fruit Shop app
